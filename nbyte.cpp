@@ -456,7 +456,7 @@ namespace Yesane{
         return true;
     }
 
-    bool nbyte::findIt(unsigned char v, size_t &pos, size_t begin = 0){
+    bool nbyte::findIt(unsigned char v, size_t &pos, size_t begin){
         if(begin>=0 && begin<data.size()){
             for(size_t i=begin; i<data.size(); ++i){
                 if(data[i].cha == v){
