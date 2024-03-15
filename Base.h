@@ -6,11 +6,11 @@
 
 namespace Yesane
 {
-    class Util;
-    class Value;
-    class fnt;
-    class dlont;
-    class nbyte;
+    class Util; //工具类
+    class Value; //分数类
+    class fnt; //大整数类
+    class dlont; //更大整数类 待实现
+    class nbyte; //新型单字节编码
     
     enum class accuracy
     {
