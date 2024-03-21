@@ -11,6 +11,7 @@ namespace Yesane
     class fnt; //大整数类
     class dlont; //更大整数类 待实现
     class nbyte; //新型单字节编码
+    class YFileSys; //新型文件系统
     
     enum class accuracy
     {
