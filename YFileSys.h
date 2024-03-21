@@ -5,7 +5,8 @@
 #include "Base.h"
 #include <string>
 #include <vector>
-#include <stdint.h>
+#include <cstdint>
+#include <algorithm>
 
 using std::vector;
 using std::string;
@@ -23,12 +24,13 @@ public:
     using byte = unsigned char; //字节数组的元素类型
     using id_t = unsigned long long; //标签id以及文件id的类型
     using tagData_t = byte[64]; //数据标签的数据所占大小以tagData_t为单位递增
-    static const ::uint32_t TAG_LENGTH = 32; //文字标签的占用字节数
-    static const ::uint32_t MAX_TAG_NUM = 16; //单个文件所能拥有的纯文本标签数量
-    static const ::uint32_t MAX_DATATAG_NUM = 8; //单个文件所能拥有的带数据标签数量
-    static const ::uint32_t MAX_TAG_INCLUDE = 64; //单个标签包含的子标签数量 即一个文件夹中所拥有的子文件夹数
-    static const ::uint32_t MAX_FILE_INCLUDE = 512; //单个标签包含的文件数量 即一个文件夹中所拥有的文件数
-    static const ::uint32_t MAX_TAG_DATA_SIZE = 16; //数据标签能用的最大字节数据
+    using size_t = std::uint32_t;
+    static const size_t TAG_LENGTH = 32; //文字标签的占用字节数
+    static const size_t MAX_TAG_NUM = 16; //单个文件所能拥有的纯文本标签数量
+    static const size_t MAX_DATATAG_NUM = 8; //单个文件所能拥有的带数据标签数量
+    static const size_t MAX_TAG_INCLUDE = 64; //单个标签包含的子标签数量 即一个文件夹中所拥有的子文件夹数
+    static const size_t MAX_FILE_INCLUDE = 512; //单个标签包含的文件数量 即一个文件夹中所拥有的文件数
+    static const size_t MAX_TAG_DATA_SIZE = 16; //数据标签能用的最大字节数据
     /*
     文件类
     */
@@ -40,7 +42,7 @@ public:
         id_t id; //文件唯一id
         vector<id_t> tags; //文件所拥有的纯文本标签 受MAX_TAG_NUM限制
         vector<id_t> dataTags; //文件所拥有的带数据标签 受MAX_DATATAG_NUM限制
-        
+        vector<size_t> dataIndex; //与dataTags维持同样大小 新增数据标签时 保存文件对应的标签数据在YDataTag对象内data成员中的索引值
     };
 
     /*
@@ -62,12 +64,19 @@ public:
     */
     class YDataTag{
     public:
-        YDataTag(uint32_t size);
+        YDataTag(size_t s);
         ~YDataTag();
+        //为一个文件添加标签数据
+        size_t addFileData(id_t f, tagData_t* d);
+        //更新标签数据
+        void uploadFileData(size_t s, tagData_t* d);
+        //删除标签数据 危险操作
+        void deleteFileData(id_t f, size_t s);
     private:
         id_t id; //唯一id
         vector<id_t> files; //包含的文件 受MAX_FILE_INCLUDE限制
-        uint32_t size; //数据所占大小 以tagData_t为单位
+        vector<tagData_t*> data; //存储的数据 vector长度与files一致
+        size_t size; //数据所占大小 以tagData_t为单位
         byte tag[TAG_LENGTH]; //标签名 使用utf-8编码
     };
 
