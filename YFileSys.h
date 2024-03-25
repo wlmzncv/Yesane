@@ -30,6 +30,7 @@ public:
     static const size_t MAX_DATATAG_NUM = 8; //单个文件所能拥有的带数据标签数量
     static const size_t MAX_TAG_INCLUDE = 64; //单个标签包含的子标签数量 即一个文件夹中所拥有的子文件夹数
     static const size_t MAX_FILE_INCLUDE = 512; //单个标签包含的文件数量 即一个文件夹中所拥有的文件数
+    static const size_t TOTAL_FILE_NUM = 102400; //文件系统中存在的文件总数量最大值 每个数据标签包含的文件数受此限制
     static const size_t MAX_TAG_DATA_SIZE = 16; //数据标签能用的最大字节数据
     /*
     文件类
@@ -52,6 +53,20 @@ public:
     public:
         YTag();
         ~YTag();
+        //设置标签名
+        void setTagName(byte* b);
+        //添加文件 返回该文件在files中的下标
+        size_t addFile(id_t f);
+        //添加子标签 返回该标签在tags中的下标
+        size_t addChildTag(id_t t);
+        //删除文件
+        void deleteFile(id_t f);
+        //删除子标签
+        void deleteChildTag(id_t t);
+        //检查是否含有某文件
+        bool hasFile(id_t f);
+        //检查是否含有某标签
+        bool hasChildTag(id_t t);
     private:
         id_t id; //唯一id
         vector<id_t> tags; //包含的子标签 受MAX_TAG_INCLUDE限制
@@ -71,11 +86,15 @@ public:
         //更新标签数据
         void uploadFileData(size_t s, tagData_t* d);
         //删除标签数据 危险操作
-        void deleteFileData(id_t f, size_t s);
+        void deleteFileData(size_t s);
+        //设置标签名
+        void setTagName(byte* b);
+        //检查是否含有某文件
+        bool hasFile(id_t f);
     private:
         id_t id; //唯一id
-        vector<id_t> files; //包含的文件 受MAX_FILE_INCLUDE限制
-        vector<tagData_t*> data; //存储的数据 vector长度与files一致
+        vector<id_t> files; //包含的文件 受TOTAL_FILE_NUM限制
+        vector<tagData_t*> data; //存储的数据 vector长度与files一致 下标位置也与files共通
         size_t size; //数据所占大小 以tagData_t为单位
         byte tag[TAG_LENGTH]; //标签名 使用utf-8编码
     };
