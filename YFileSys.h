@@ -51,6 +51,7 @@ public:
         vector<id_t> tags; //文件所拥有的纯文本标签 受MAX_TAG_NUM限制
         vector<id_t> dataTags; //文件所拥有的带数据标签 受MAX_DATATAG_NUM限制
         vector<size_t> dataIndex; //与dataTags维持同样大小 新增数据标签时 保存文件对应的标签数据在YDataTag对象内data成员中的索引值
+    private:
         void clearTags(vector<YTag>& gs);
         void clearDataTags(vector<YDataTag>& ds);
     };

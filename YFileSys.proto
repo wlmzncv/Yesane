@@ -1,0 +1,26 @@
+syntax = "proto3";
+package Yesane;
+
+message YFile {
+  uint64 id = 1;
+  repeated uint64 tags = 2;
+  repeated uint64 dataTags = 3;
+  repeated uint32 dataIndex = 4;
+}
+
+message YTag {
+  uint64 id = 1;
+  repeated uint64 tags = 2;
+  repeated uint64 files = 3;
+  uint32 tagName = 4; //长度可能变化
+}
+
+message OneData { uint64 d = 1; }
+
+message YDataTag {
+  uint64 id = 1;
+  repeated uint64 files = 2;
+  uint32 size = 3; //数据块数量
+  uint32 tagName = 4; //长度可能变化
+  repeated OneData = 5; //标签数据
+}
