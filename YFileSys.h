@@ -32,7 +32,8 @@ public:
     static const size_t MAX_TAG_INCLUDE = 64; //单个标签包含的子标签数量 即一个文件夹中所拥有的子文件夹数
     static const size_t MAX_FILE_INCLUDE = 512; //单个标签包含的文件数量 即一个文件夹中所拥有的文件数
     static const size_t TOTAL_FILE_NUM = 102400; //文件系统中存在的文件总数量最大值 每个数据标签包含的文件数受此限制
-    static const size_t MAX_TAG_DATA_SIZE = 16; //数据标签能用的最大字节数据
+    static const size_t MAX_TAG_DATA_SIZE = 16; //数据标签能用的最大字节数据 此处16*64为1KB
+    //TOTAL_FILE_NUM*MAX_DATATAG_NUM为数据标签总数，单个若为1KB，则总占用空间为800MB
     class YFile;
     class YTag;
     class YDataTag;
@@ -73,9 +74,9 @@ public:
         //删除子标签
         void deleteChildTag(id_t t);
         //检查是否含有某文件
-        bool hasFile(id_t f);
+        bool hasFile(id_t f) const;
         //检查是否含有某标签
-        bool hasChildTag(id_t t);
+        bool hasChildTag(id_t t) const;
     private:
         id_t id; //唯一id
         vector<id_t> tags; //包含的子标签 受MAX_TAG_INCLUDE限制
@@ -119,17 +120,23 @@ private:
     vector<YFile> files; //注意 第1个文件的索引是0
     vector<YTag> tags; //注意 第1个标签的索引是0
     vector<YDataTag> dataTags; //注意 第1个标签的索引是0
-    void createFile(size_t n=1); //创建新文件 n表示文件块数量
-    id_t deleteFile(id_t f); //删除文件
-    void createTag(); //创建新标签
-    void createDataTag(size_t s); //创建新数据标签
+public:
+    id_t createFile(size_t n=1); //创建新文件 n表示文件块数量
+    void deleteFile(id_t f); //删除文件
+    id_t createTag(); //创建新标签
+    id_t createDataTag(size_t s); //创建新数据标签
+    bool checkState(); //检查文件系统是否有错误
+    YFile& getYFile(id_t d){return files.at(d);}
+    YTag& getYTag(id_t d){return tags.at(d);}
+    YDataTag& getYDataTag(id_t d){return dataTags.at(d);}
+
 public:
     YFileSys(){}
     ~YFileSys(){}
     void set_min_file_size(size_t s){min_file_size=s;}
     void set_expand(size_t t){expand=t;}
-    size_t get_min_file_size(){return min_file_size;}
-    size_t get_expand(){return expand;}
+    size_t get_min_file_size()const{return min_file_size;}
+    size_t get_expand()const{return expand;}
 private:
     unsigned long long begin_time; //时间戳 单位秒 文件系统建立时间
     
