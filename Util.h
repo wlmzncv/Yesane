@@ -49,6 +49,7 @@ class Yesane::Util{
             vector<TypeWithInOp> vs(iter, eof);
             return vs;
         }
+        static vector<unsigned char> strToUChar(const string& a);
 };
 
 #endif

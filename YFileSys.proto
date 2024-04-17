@@ -1,5 +1,5 @@
 syntax = "proto3";
-package Yesane;
+package YesaneProto;
 
 message YFile {
   uint64 id = 1;
@@ -12,7 +12,7 @@ message YTag {
   uint64 id = 1;
   repeated uint64 tags = 2;
   repeated uint64 files = 3;
-  uint32 tagName = 4; //长度可能变化
+  string tagName = 4; //长度可能变化
 }
 
 message OneData { uint64 d = 1; }
@@ -21,6 +21,20 @@ message YDataTag {
   uint64 id = 1;
   repeated uint64 files = 2;
   uint32 size = 3; //数据块数量
-  uint32 tagName = 4; //长度可能变化
-  repeated OneData = 5; //标签数据
+  string tagName = 4; //长度可能变化
+  repeated OneData data = 5; //标签数据
+}
+
+message YFileSys {
+  uint64 max_file_id = 1;
+  uint64 max_tag_id = 2;
+  uint64 max_datatag_id = 3;
+  uint32 min_file_size = 4;
+  uint32 expand = 5;
+  repeated uint64 fileArrayHard = 6;
+  string valid_list = 7; //实际对应的是unsigned char数组
+  uint64 min_deleted = 8;
+  repeated YFile files = 9;
+  repeated YTag tags = 10;
+  repeated YDataTag dataTags = 11;
 }

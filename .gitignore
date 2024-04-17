@@ -2,3 +2,5 @@ build/
 .vscode/
 CMakeLists.txt.user
 *.cpp
+*pb.cc
+*pb.h
